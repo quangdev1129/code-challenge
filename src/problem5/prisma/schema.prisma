@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique @db.VarChar(100)
+  resources Resource[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String     @id @default(uuid())
+  name      String     @unique @db.VarChar(100)
+  resources Resource[]
+  createdAt DateTime   @default(now())
+
+  @@map("tags")
+}
+
+model Resource {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(255)
+  description String?   @db.Text
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  tags        Tag[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("resources")
+}
